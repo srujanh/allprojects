@@ -1,0 +1,119 @@
+
+How to make rest call from a stand alone java application using Okhttp
+
+
+To make a REST call from a standalone Java application using OkHttp, you'll need to include the OkHttp library in your project. Here’s a step-by-step guide:
+
+### Step 1: Add OkHttp Dependency
+
+If you're using Maven, add the following dependency to your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>com.squareup.okhttp3</groupId>
+    <artifactId>okhttp</artifactId>
+    <version>4.10.0</version> <!-- Check for the latest version -->
+</dependency>
+```
+
+If you're using Gradle, add this to your `build.gradle`:
+
+```groovy
+implementation 'com.squareup.okhttp3:okhttp:4.10.0' // Check for the latest version
+```
+
+If you're not using a build tool, you can download the OkHttp JAR files from [Maven Central](https://search.maven.org/artifact/com.squareup.okhttp3/okhttp).
+
+### Step 2: Create the Java Application
+
+Here's a simple example of how to make a GET request using OkHttp:
+
+```java
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import java.io.IOException;
+
+public class OkHttpExample {
+    public static void main(String[] args) {
+        OkHttpClient client = new OkHttpClient();
+
+        // Replace with your REST API endpoint
+        String url = "https://api.example.com/data";
+
+        // Create a request
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code " + response);
+            }
+
+            // Print the response body
+            System.out.println(response.body().string());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Step 3: Run Your Application
+
+Make sure to run your application with Java. If you’re using an IDE like IntelliJ IDEA or Eclipse, just run the main method. If you're compiling from the command line, you can do:
+
+```bash
+javac OkHttpExample.java
+java OkHttpExample
+```
+
+### Making Other Types of Requests
+
+#### POST Request Example
+
+Here’s how to make a POST request:
+
+```java
+import okhttp3.*;
+
+import java.io.IOException;
+
+public class OkHttpPostExample {
+    public static void main(String[] args) {
+        OkHttpClient client = new OkHttpClient();
+
+        String url = "https://api.example.com/data";
+        MediaType JSON = MediaType.get("application/json; charset=utf-8");
+        String json = "{\"key\":\"value\"}";
+
+        RequestBody body = RequestBody.create(json, JSON);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code " + response);
+            }
+
+            System.out.println(response.body().string());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Additional Considerations
+
+- **Error Handling:** Always handle potential exceptions, such as `IOException`, to avoid crashes.
+- **Asynchronous Requests:** You can use `enqueue` for asynchronous requests if needed.
+- **Headers:** Use `.addHeader()` in the `Request.Builder()` to add headers if required by your API.
+
+### Conclusion
+
+With OkHttp, making REST calls in a standalone Java application is straightforward. Just create the `OkHttpClient`, build your request, and execute it! Let me know if you need any more help!
